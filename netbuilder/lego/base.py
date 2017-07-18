@@ -120,7 +120,35 @@ class BaseLegoFunction(BaseLego):
     the default parameters of the core legos
 '''
 class Config(object):
-    _default_params = {}
+    _default_params = dict(
+        Convolution = dict(
+                        weight_filler=dict(type='msra'),
+                        bias_filler=dict(type='constant',value=0),
+                        param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)]
+                        ),
+
+        BatchNorm = dict(
+                        param=[dict(lr_mult=0, decay_mult=0), 
+                            dict(lr_mult=0, decay_mult=0), dict(lr_mult=0, decay_mult=0)],
+                        in_place=True
+                        ),
+
+        InnerProduct = dict(
+                        weight_filler= dict(type='msra'),
+                        bias_filler= dict(type='constant'),
+                        param= [dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)]
+                        ),
+
+        Scale = dict(bias_term=True,in_place=True),
+        ReLU = dict(in_place=True),
+
+        # Mainly used for SSD
+        Permute = dict(
+                    permute_param=dict(order=[0, 2, 3, 1])
+                        ),
+
+        Dropout = dict(in_place=True),
+    )
 
     @classmethod
     def get_default_params(self, layer):
